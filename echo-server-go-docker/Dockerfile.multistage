@@ -1,0 +1,27 @@
+# syntax=docker/dockerfile:1
+FROM golang:1.21.3 AS builder
+
+# Set destination for COPY
+WORKDIR /app
+
+# Download Go modules
+COPY go.mod ./
+RUN go mod download
+
+# Copy the source code
+COPY . .
+
+# Build
+RUN CGO_ENABLED=0 GOOS=linux go build -o /echo-server-go-docker
+
+# Final stage
+FROM alpine:3.18
+
+# Copy the compiled binary from the builder stage
+COPY --from=builder /echo-server-go-docker /echo-server-go-docker
+
+# Expose the port
+EXPOSE 3333
+
+# Run
+CMD ["/echo-server-go-docker"]
