@@ -1,7 +1,7 @@
 import * as net from "net";
 
 // A promise-based API for TCP sockets.
-type TCPConn = {
+export type TCPConn = {
   // the JS socket object
   socket: net.Socket;
   // from the 'error' event
@@ -16,7 +16,7 @@ type TCPConn = {
 };
 
 // create a wrapper from net.Socket
-function soInit(socket: net.Socket): TCPConn {
+export function soInit(socket: net.Socket): TCPConn {
   const conn: TCPConn = {
     socket: socket,
     err: null,
@@ -46,7 +46,7 @@ function soInit(socket: net.Socket): TCPConn {
 }
 
 // returns an empty `Buffer` after EOF.
-function soRead(conn: TCPConn): Promise<Buffer> {
+export function soRead(conn: TCPConn): Promise<Buffer> {
   console.assert(!conn.reader); // no concurrent calls
   return new Promise((resolve, reject) => {
     // if the connection is not readable, complete the promise now.
@@ -66,7 +66,7 @@ function soRead(conn: TCPConn): Promise<Buffer> {
   });
 }
 
-function soWrite(conn: TCPConn, data: Buffer): Promise<void> {
+export function soWrite(conn: TCPConn, data: Buffer): Promise<void> {
   console.assert(data.length > 0);
   return new Promise((resolve, reject) => {
     if (conn.err) {
